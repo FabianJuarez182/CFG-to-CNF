@@ -3,60 +3,37 @@ from CNFParser import parseToCNF
 # T, V, S, P
 
 
-#TERMINALES
-T = ["cooks", "drinks", "eats", "cuts", "he", "she", "in", "with", "cat", "dog", "beer", "cake", "juice", "meat", "soup", "fork","knife", "oven", "spoon", "a", "the"]
+# TERMINALES
+#T = ["cooks", "drinks", "eats", "cuts", "he", "she", "in", "with", "cat", "dog", "beer", "cake", "juice", "meat", "soup", "fork", "knife", "oven", "spoon", "a", "the"]
+T = ['a','b']
+# PRODUCCIONES
+'''
+productions = {
+    "N": ["cat", "dog", "beer", "cake", "juice", "meat", "soup", "fork", "knife", "oven", "spoon"],
+    "Det": ["a", "the"],
+    "V": ["cooks", "drinks", "eats", "cuts"],
+    "P": ["in", "with"],
+    "NP": [["he", "she"], ["Det", "N"]],
+    "PP": ["P", "NP"],
+    "VP": ["V", ["V", "NP"], ["VP", "PP"]],
+    "A": ["B"],
+    "S": ["NP", "VP", "A"]
+}
+'''
+P = {
+    'S': {'ASB'},
+    'A': {'aAS','a','' },
+    'B': {'SbS','A','bb'}
+}
+# Lista de no terminales
+V = list(P.keys())
 
-
-#PRODUCCIONES
-n = ["cat", "dog", "beer", "cake", "juice", "meat", "soup","fork", "knife", "oven", "spoon"]
-
-det = ["a", "the"]
-
-v = ["cooks", "drinks", "eats", "cuts"]
-
-p = ["in", "with"]
-
-np = [["he", "she"],[det, n]]
-
-pp = ['p,np']
-
-vp = [v, ['v,np'],['vp,pp']]
-
-b = ['v,p']
-
-a = ['b']
-
-s = ['np,vp','a']
-
-V = [
-    'n',
-    'det',
-    'v',
-    'p',
-    'np',
-    'pp',
-    'vp',
-    'b',
-    'a',
-    's'
-]
-
-P = [
-    #Name, Productions
-    [n],
-    [det],
-    [v],
-    [p],
-    [np],
-    [pp],
-    [vp],
-    [b],
-    [a],
-    [s]
-]
+# Estado inicial
+S = 'S'
 
 def main():
-    CNF = parseToCNF(T, P, V)
+    CNF = parseToCNF(T, P, V, S)
+    print(CNF)
 
 if __name__ == "__main__":
     main()

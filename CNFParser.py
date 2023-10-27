@@ -12,8 +12,9 @@ def create_new_start_symbol(P, S):
 
 def eliminate_epsilon_productions(T, P, V):
     epsilon_generators = {key for key, productions in P.items() if '' in productions}
+    Flag = True
 
-    while True:
+    while Flag:
         new_P = {key: [] for key in P}
         for key, productions in P.items():
             for production in productions:
@@ -36,13 +37,49 @@ def eliminate_epsilon_productions(T, P, V):
 
         if new_P == P:
             break
-        eliminate_epsilon_productions(T, new_P, V)
+        for key, productions in new_P.items():
+            for production in productions:
+                if '' == production:
+                    P = new_P
+                    eliminate_epsilon_productions(T, new_P, V)
+                    break
 
+        P = new_P
+        Flag = False
+        break
     print(P)
     return T, P, V
 
 def eliminate_unit_productions(P, V):
-    return
+    # Para cada no terminal, almacenaremos sus producciones directas
+    direct_productions = {nonterminal: set(productions) for nonterminal, productions in P.items()}
+
+    # Iteramos hasta que ya no haya producciones unitarias
+    while True:
+        updated = False
+        for nonterminal, productions in direct_productions.items():
+            unit_productions = {production for production in productions if len(production) == 1 and production[0] in V}
+            new_productions = productions.copy()
+
+            for unit_production in unit_productions:
+                unit_nonterminal = unit_production[0]
+                if unit_nonterminal in direct_productions:
+                    new_productions.remove(unit_production)
+                    new_productions.update(direct_productions[unit_nonterminal])
+
+            if new_productions != productions:
+                updated = True
+                direct_productions[nonterminal] = new_productions
+
+        if not updated:
+            break
+
+    # Reconstruimos el conjunto de producciones finales
+    for nonterminal, productions in P.items():
+        P[nonterminal] = list(direct_productions[nonterminal])
+
+    return P, V
+
 
 def break_down_long_productions(P, V):
     return

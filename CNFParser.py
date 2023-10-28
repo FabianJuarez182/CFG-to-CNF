@@ -92,9 +92,12 @@ def break_down_long_productions(P, T):
 
                 #ANTES DE LO QUE SIGUE, HAY QUE CHECAR SI YA SE CREÓ UNA NUEVA PRODUCCIÓN HACIA ESE TERMINAL
                 new_productions.remove(production)
-                new_last_symbol = ord(list(direct_productions)[-2]) + 18
+                new_last_symbol = list(direct_productions) [-1]
+                if new_last_symbol == 'S0':
+                    new_last_symbol = list(direct_productions) [-2]
                 new_symbol = chr(new_last_symbol)
-                new_productions.add()
+                new_productions.add(new_symbol)
+                #LUEGO AQUÍ SOLO FALTA CREAR LA PRODUCCIÓN DEL NUEVO SÍMBOLO AL TERMINAL
 
 def eliminate_remaining_unit_productions(P, V):
     return

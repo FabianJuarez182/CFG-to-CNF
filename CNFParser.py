@@ -81,23 +81,45 @@ def eliminate_unit_productions(P, V):
 
     return P, V
 
+def check_terminal_prods(P,terminal):
+    for nonterminal, prods in P.items():
+        if terminal == prods:
+            return nonterminal
+    return None
+
+
 
 def break_down_long_productions(P, T):
     direct_productions = {nonterminal: set(productions) for nonterminal, productions in P.items()}
+    new_direct_productions = direct_productions.copy()
 
     for nonterminal, productions in direct_productions.items():
         for production in productions:
             new_productions = productions.copy()
-            if len(production) == 1 and production in T:
-
-                #ANTES DE LO QUE SIGUE, HAY QUE CHECAR SI YA SE CREÓ UNA NUEVA PRODUCCIÓN HACIA ESE TERMINAL
+            if len(production) > 1 and production[0] in T and production[1] in T:
+                
+                exists_prod = check_terminal_prods(direct_productions,production[0])
                 new_productions.remove(production)
-                new_last_symbol = list(direct_productions) [-1]
-                if new_last_symbol == 'S0':
-                    new_last_symbol = list(direct_productions) [-2]
-                new_symbol = chr(new_last_symbol)
-                new_productions.add(new_symbol)
-                #LUEGO AQUÍ SOLO FALTA CREAR LA PRODUCCIÓN DEL NUEVO SÍMBOLO AL TERMINAL
+                prod = ""
+                if exists_prod:
+                    for x in range(len(production)):
+                        prod += str(exists_prod)
+                    new_productions.add(prod)
+
+                else:
+                    new_last_symbol = list(direct_productions) [-1]
+                    if new_last_symbol == 'S0':
+                        new_last_symbol = list(direct_productions) [-2]
+                    new_symbol = chr(ord(new_last_symbol) + 1)
+                    for x in range(len(production)):
+                        prod += str(new_symbol)
+                    new_productions.add(prod)
+                    new_direct_productions[new_symbol] = {production[0]}
+        if productions != new_productions:            
+            new_direct_productions[nonterminal] = new_productions
+                
+    
+    return new_direct_productions
 
 def eliminate_remaining_unit_productions(P, V):
     return
@@ -113,7 +135,7 @@ def parseToCNF(T, P, V, S):
     P, V = eliminate_unit_productions(P, V)
 
     # # Paso 4: Dividir producciones largas en producciones binarias
-    P, V = break_down_long_productions(P, T)
+    P = break_down_long_productions(P, T)
 
     # # Paso 5: Eliminar las producciones unitarias restantes
     #P, V = eliminate_remaining_unit_productions(P, V)

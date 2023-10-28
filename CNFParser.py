@@ -10,7 +10,7 @@ def create_new_start_symbol(P, S):
     else:
         return P, S
 
-def eliminate_epsilon_productions(T, P, V):
+def eliminate_epsilon_productions(P):
     epsilon_generators = {key for key, productions in P.items() if '' in productions}
     Flag = True
 
@@ -41,14 +41,12 @@ def eliminate_epsilon_productions(T, P, V):
             for production in productions:
                 if '' == production:
                     P = new_P
-                    eliminate_epsilon_productions(T, new_P, V)
+                    new_P = eliminate_epsilon_productions(new_P)
                     break
-
         P = new_P
         Flag = False
-        break
     print(P)
-    return T, P, V
+    return P
 
 def eliminate_unit_productions(P, V):
     # Para cada no terminal, almacenaremos sus producciones directas
@@ -65,7 +63,10 @@ def eliminate_unit_productions(P, V):
                 unit_nonterminal = unit_production[0]
                 if unit_nonterminal in direct_productions:
                     new_productions.remove(unit_production)
-                    new_productions.update(direct_productions[unit_nonterminal])
+                    if unit_nonterminal != 'S':
+                        new_productions.update(direct_productions[unit_nonterminal])
+                    elif nonterminal == 'S0':
+                        new_productions.update(direct_productions['S'])
 
             if new_productions != productions:
                 updated = True
@@ -81,8 +82,19 @@ def eliminate_unit_productions(P, V):
     return P, V
 
 
-def break_down_long_productions(P, V):
-    return
+def break_down_long_productions(P, T):
+    direct_productions = {nonterminal: set(productions) for nonterminal, productions in P.items()}
+
+    for nonterminal, productions in direct_productions.items():
+        for production in productions:
+            new_productions = productions.copy()
+            if len(production) == 1 and production in T:
+
+                #ANTES DE LO QUE SIGUE, HAY QUE CHECAR SI YA SE CREÓ UNA NUEVA PRODUCCIÓN HACIA ESE TERMINAL
+                new_productions.remove(production)
+                new_last_symbol = ord(list(direct_productions)[-2]) + 18
+                new_symbol = chr(new_last_symbol)
+                new_productions.add()
 
 def eliminate_remaining_unit_productions(P, V):
     return
@@ -92,16 +104,16 @@ def parseToCNF(T, P, V, S):
     P, S = create_new_start_symbol(P, S)
 
     # Paso 2: Eliminar producciones ε
-    T, P, V = eliminate_epsilon_productions(T, P, V)
+    P = eliminate_epsilon_productions(P)
 
     # Paso 3: Eliminar producciones unitarias
     P, V = eliminate_unit_productions(P, V)
 
-    # Paso 4: Dividir producciones largas en producciones binarias
-    P, V = break_down_long_productions(P, V)
+    # # Paso 4: Dividir producciones largas en producciones binarias
+    P, V = break_down_long_productions(P, T)
 
-    # Paso 5: Eliminar las producciones unitarias restantes
-    P, V = eliminate_remaining_unit_productions(P, V)
+    # # Paso 5: Eliminar las producciones unitarias restantes
+    #P, V = eliminate_remaining_unit_productions(P, V)
 
     # Ahora, P contiene las producciones en CNF
     CNF = (T, P, V, S)

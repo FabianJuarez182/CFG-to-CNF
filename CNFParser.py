@@ -131,6 +131,8 @@ def break_down_long_productions(P, T):
             new_productions.remove(production)
             production = production.split(" ")
             prod = ""
+            new_last_symbol = list(new_direct_productions) [-1]
+            count = 2
             if len(production) > 1:
                 if check_1_char(production, T):
                     exists_prod = check_terminal_prods(new_direct_productions,{production[0]})
@@ -140,9 +142,9 @@ def break_down_long_productions(P, T):
                         new_productions.add(prod)
                         new_direct_productions[exists_prod] = {production[0]}
                     else:
-                        new_last_symbol = list(new_direct_productions) [-1]
-                        if new_last_symbol == 'S0':
-                            new_last_symbol = list(new_direct_productions) [-2]
+                        while len(new_last_symbol) > 1:
+                            new_last_symbol = list(new_direct_productions)[-count]
+                            count+=1
                         new_symbol = chr(ord(new_last_symbol) + 1)
                         for x in range(len(production)):
                             prod += str(new_symbol)
@@ -155,9 +157,9 @@ def break_down_long_productions(P, T):
                             if exists_prod:
                                 prod += exists_prod
                             else:
-                                new_last_symbol = list(new_direct_productions) [-1]
-                                if new_last_symbol == 'S0':
-                                    new_last_symbol = list(new_direct_productions) [-2]
+                                while len(new_last_symbol) > 1:
+                                    new_last_symbol = list(new_direct_productions)[-count]
+                                    count+=1
                                 new_symbol = chr(ord(new_last_symbol) + 1)
                                 prod += str(new_symbol)
                                 new_direct_productions[new_symbol] = {x}

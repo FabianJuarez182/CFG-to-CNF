@@ -45,7 +45,6 @@ def eliminate_epsilon_productions(P):
                     break
         P = new_P
         Flag = False
-    print(P)
     return P
 
 def eliminate_unit_productions(P, V):
@@ -144,18 +143,45 @@ def break_down_long_productions(P, T):
                             prod += x
                     new_productions.add(prod)
 
-
-
-            
-
-        if productions != new_productions:            
+        if productions != new_productions:
             new_direct_productions[nonterminal] = new_productions
-                
-    
+
     return new_direct_productions
 
-def eliminate_remaining_unit_productions(P, V):
-    return
+def eliminate_more_two_productions(P):
+
+    new_productions = P.copy()
+
+    for non_terminal, productions in P.items():
+        updated_productions = []
+        for production in productions:
+            if len(production) > 2 :
+                # Divide producciones largas en producciones binarias
+                symbols = list(production)
+                while len(symbols) > 2:
+                    new_non_terminal = generate_new_non_terminal(new_productions)
+                    x = ''.join(symbols[:2])
+                    new_productions[new_non_terminal] = [x]
+                    array = symbols[2:]
+                    symbols = new_non_terminal + array[0]
+                    #symbols = [new_non_terminal] + symbols[2:]
+                updated_productions.append(symbols)
+
+            else:
+                updated_productions.append(production)
+
+        new_productions[non_terminal] = updated_productions
+
+
+    return new_productions
+
+
+def generate_new_non_terminal(P):
+    new_non_terminal = 'H'
+    while new_non_terminal in P:
+        new_non_terminal =  chr(ord(new_non_terminal) + 1)
+
+    return new_non_terminal
 
 def parseToCNF(T, P, V, S):
     # Paso 1: crear una nueva produccion S0-> S
@@ -167,11 +193,11 @@ def parseToCNF(T, P, V, S):
     # Paso 3: Eliminar producciones unitarias
     P, V = eliminate_unit_productions(P, V)
 
-    # # Paso 4: Dividir producciones largas en producciones binarias
+    # # Paso 4: Movilizar los terminales a nuevos estados
     P = break_down_long_productions(P, T)
 
-    # # Paso 5: Eliminar las producciones unitarias restantes
-    #P, V = eliminate_remaining_unit_productions(P, V)
+    # # Paso 5: Eliminar las producciones con mas de 2 simbolos
+    P = eliminate_more_two_productions(P)
 
     # Ahora, P contiene las producciones en CNF
     CNF = (T, P, V, S)

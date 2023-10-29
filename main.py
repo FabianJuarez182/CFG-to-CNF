@@ -22,7 +22,7 @@ productions = {
 '''
 P = {
     'S': {'ASB'},
-    'A': {'aAS','aa','' },
+    'A': {'aAS','a','' },
     'B': {'SbS','A','bb'}
 }
 # Lista de no terminales

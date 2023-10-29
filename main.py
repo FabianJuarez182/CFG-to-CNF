@@ -21,9 +21,9 @@ productions = {
 }
 '''
 P = {
-    'S': {'ASB'},
-    'A': {'aAS','a','' },
-    'B': {'SbS','A','bb'}
+    'S': {'A S B'},
+    'A': {'a A S','a','' },
+    'B': {'S b S','A','b b'}
 }
 # Lista de no terminales
 V = list(P.keys())

@@ -22,7 +22,15 @@ def eliminate_epsilon_productions(P):
                     # Si la producción contiene ε, agrega todas las combinaciones sin ε
                     if '' != production:
                         combinations = [prod.replace('', '') for prod in production.split(' ') if prod != '']
-                        new_P[key].extend(combinations)
+                        cont = 0
+                        new_combination = ""
+                        for combination in combinations:
+                            cont += 1
+                            if len(combinations) == cont:
+                                new_combination += combination
+                            else:
+                                new_combination += combination + " "
+                        new_P[key].append(new_combination)
                         new_production = []
                         for symbol in production:
                             if production != symbol:
@@ -31,7 +39,20 @@ def eliminate_epsilon_productions(P):
                                     new_production.extend(production.replace(symbol, ''))
                             if production == symbol and production in epsilon_generators:
                                 new_P[key].append('')
+
                         if new_production:
+                            cont_prod = 0
+                            for product in new_production:
+                                if product == " " and cont_prod == 0 :
+                                    del new_production[cont_prod]
+                                    cont_prod += 1
+                                elif new_production[cont_prod] == " " and new_production[len(new_production) - 1] == " " and cont_prod == len(new_production) - 1:
+                                            del new_production[cont_prod]
+                                elif new_production[cont_prod] == " " and new_production[cont_prod + 1] == " ":
+                                    del new_production[cont_prod]
+                                    cont_prod += 1
+                                else:
+                                    cont_prod += 1
                             new_P[key].append(''.join(new_production))
                             new_production = []
 

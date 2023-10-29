@@ -82,10 +82,21 @@ def eliminate_unit_productions(P, V):
     return P, V
 
 def check_terminal_prods(P,terminal):
+    
     for nonterminal, prods in P.items():
         if terminal == prods:
             return nonterminal
     return None
+
+def check_1_char(string, T):
+    flag = False
+    c = string[0]
+    for ch in string:
+        if c in T and c == ch:
+            flag = True
+        else:
+            flag = False
+    return flag
 
 
 
@@ -94,27 +105,49 @@ def break_down_long_productions(P, T):
     new_direct_productions = direct_productions.copy()
 
     for nonterminal, productions in direct_productions.items():
+        new_productions = productions.copy()
         for production in productions:
-            new_productions = productions.copy()
-            if len(production) > 1 and production[0] in T and production[1] in T:
-                
-                exists_prod = check_terminal_prods(direct_productions,production[0])
-                new_productions.remove(production)
-                prod = ""
-                if exists_prod:
-                    for x in range(len(production)):
-                        prod += str(exists_prod)
+            prod = ""
+            if len(production) > 1:
+                if check_1_char(production, T):
+                    exists_prod = check_terminal_prods(new_direct_productions,{production[0]})
+                    new_productions.remove(production)
+                    if exists_prod:
+                        for x in range(len(production)):
+                            prod += str(exists_prod)
+                        new_productions.add(prod)
+                        new_direct_productions[exists_prod] = {production[0]}
+                    else:
+                        new_last_symbol = list(new_direct_productions) [-1]
+                        if new_last_symbol == 'S0':
+                            new_last_symbol = list(new_direct_productions) [-2]
+                        new_symbol = chr(ord(new_last_symbol) + 1)
+                        for x in range(len(production)):
+                            prod += str(new_symbol)
+                        new_productions.add(prod)
+                        new_direct_productions[new_symbol] = {production[0]}
+                else:
+                    for x in production:
+                        if x in T:
+                            new_productions.remove(production)
+                            exists_prod = check_terminal_prods(new_direct_productions, {x})
+                            if exists_prod:
+                                prod += exists_prod
+                            else:
+                                new_last_symbol = list(new_direct_productions) [-1]
+                                if new_last_symbol == 'S0':
+                                    new_last_symbol = list(new_direct_productions) [-2]
+                                new_symbol = chr(ord(new_last_symbol) + 1)
+                                prod += str(new_symbol)
+                                new_direct_productions[new_symbol] = {x}
+                        else:
+                            prod += x
                     new_productions.add(prod)
 
-                else:
-                    new_last_symbol = list(direct_productions) [-1]
-                    if new_last_symbol == 'S0':
-                        new_last_symbol = list(direct_productions) [-2]
-                    new_symbol = chr(ord(new_last_symbol) + 1)
-                    for x in range(len(production)):
-                        prod += str(new_symbol)
-                    new_productions.add(prod)
-                    new_direct_productions[new_symbol] = {production[0]}
+
+
+            
+
         if productions != new_productions:            
             new_direct_productions[nonterminal] = new_productions
                 

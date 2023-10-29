@@ -126,12 +126,14 @@ def break_down_long_productions(P, T):
 
     for nonterminal, productions in direct_productions.items():
         new_productions = productions.copy()
-        for production in productions:
+        productions_splitted = list(productions)
+        for production in productions_splitted:
+            new_productions.remove(production)
+            production = production.split(" ")
             prod = ""
             if len(production) > 1:
                 if check_1_char(production, T):
                     exists_prod = check_terminal_prods(new_direct_productions,{production[0]})
-                    new_productions.remove(production)
                     if exists_prod:
                         for x in range(len(production)):
                             prod += str(exists_prod)
@@ -149,7 +151,6 @@ def break_down_long_productions(P, T):
                 else:
                     for x in production:
                         if x in T:
-                            new_productions.remove(production)
                             exists_prod = check_terminal_prods(new_direct_productions, {x})
                             if exists_prod:
                                 prod += exists_prod
@@ -163,7 +164,8 @@ def break_down_long_productions(P, T):
                         else:
                             prod += x
                     new_productions.add(prod)
-
+            else:
+                new_productions.add(production[0])
         if productions != new_productions:
             new_direct_productions[nonterminal] = new_productions
 

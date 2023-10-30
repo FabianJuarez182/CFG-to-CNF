@@ -138,7 +138,7 @@ def break_down_long_productions(P, T):
                     exists_prod = check_terminal_prods(new_direct_productions,{production[0]})
                     if exists_prod:
                         for x in range(len(production)):
-                            prod += str(exists_prod) + " "
+                            prod += str(exists_prod)
                         new_productions.add(prod)
                         new_direct_productions[exists_prod] = {production[0]}
                     else:
@@ -147,7 +147,7 @@ def break_down_long_productions(P, T):
                             count+=1
                         new_symbol = chr(ord(new_last_symbol) + 1)
                         for x in range(len(production)):
-                            prod += str(new_symbol) + " "
+                            prod += str(new_symbol)
                         new_productions.add(prod)
                         new_direct_productions[new_symbol] = {production[0]}
                 else:
@@ -155,17 +155,17 @@ def break_down_long_productions(P, T):
                         if x in T:
                             exists_prod = check_terminal_prods(new_direct_productions, {x})
                             if exists_prod:
-                                prod += exists_prod + " "
+                                prod += exists_prod
                             else:
                                 while len(new_last_symbol) > 1:
                                     new_last_symbol = list(new_direct_productions)[-count]
                                     count+=1
                                 new_symbol = chr(ord(new_last_symbol) + 1)
-                                prod += str(new_symbol) + " "
+                                prod += str(new_symbol)
                                 new_direct_productions[new_symbol] = {x}
                         else:
-                            prod += x + " "
-                    new_productions.add(prod)
+                            prod += x
+                    new_productions.add(prod + " ")
             else:
                 new_productions.add(production[0])
         if productions != new_productions:

@@ -5,10 +5,10 @@ from CYKParser import parse_cyk, print_parse_tree
 
 
 # TERMINALES
-T = ['cooks', 'drinks', 'eats', 'cuts', 'he', 'she', 'in', 'with', 'cat', 'dog', 'beer', 'cake', 'juice', 'meat', 'soup', 'fork', 'knife', 'oven', 'spoon', 'a', 'the']
-#T = ['a','b']
+#T = ['cooks', 'drinks', 'eats', 'cuts', 'he', 'she', 'in', 'with', 'cat', 'dog', 'beer', 'cake', 'juice', 'meat', 'soup', 'fork', 'knife', 'oven', 'spoon', 'a', 'the']
+T = ['a','b']
 # PRODUCCIONES
-
+'''
 P = {
     'N': {'cat', 'dog', 'beer', 'cake', 'juice', 'meat', 'soup', 'fork', 'knife', 'oven', 'spoon'},
     'Det': {'a', 'the'},
@@ -17,8 +17,9 @@ P = {
     'NP': {'he she', 'Det N'},
     'PP': {'P NP'},
     'VP': {'VP PP', 'V NP','cooks', 'drinks', 'eats', 'cuts' },
+    'B': {''},
     'A': {'B'},
-    'S': {'NP VP A'}
+    'S': {'NP VP', 'A'}
 }
 
 '''
@@ -28,7 +29,7 @@ P = {
     'B': {'S b S','A','b b'},
     #'AA': {'a'}
 }
-'''
+
 
 # Lista de no terminales
 V = list(P.keys())

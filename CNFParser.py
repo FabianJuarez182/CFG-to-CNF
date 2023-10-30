@@ -239,3 +239,19 @@ def parseToCNF(T, P, V, S):
     CNF = (T, P, V, S)
 
     return CNF
+
+def print_parse_cnf(CNF):
+    accepted_states, productions, non_accepted_states, start_state = CNF
+    T = f"Terminales: {accepted_states}"
+    V = f"No terminales: {non_accepted_states}"
+    S = f"Estado inicial: {start_state}"
+    P = "Producciones: \n"
+    formatted_grammar = {}
+    for key, value in productions.items():
+        formatted_value = ' | '.join(value)
+        formatted_grammar[key] = formatted_value
+        
+    for key, value in formatted_grammar.items():
+        P += f"{key} -> {value} \n"
+    
+    print(f"Gramatica CNF: \n{T}\n{V}\n{S}\n{P}")

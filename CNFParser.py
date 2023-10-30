@@ -110,7 +110,6 @@ def eliminate_unit_productions(P, V):
     return P, V
 
 def check_terminal_prods(P,terminal):
-    
     for nonterminal, prods in P.items():
         if terminal == prods:
             return nonterminal
@@ -188,20 +187,23 @@ def eliminate_more_two_productions(P):
     for non_terminal, productions in P.items():
         updated_productions = []
         for production in productions:
-            if len(production) > 2 :
+            split_production = production.rstrip()
+            split_production = production.split()  # Divide la producción por espacios en blanco
+            if len(split_production) > 2 :
                 # Divide producciones largas en producciones binarias
-                symbols = list(production)
+                symbols = list(split_production)
                 while len(symbols) > 2:
                     new_non_terminal = generate_new_non_terminal(new_productions)
-                    x = ''.join(symbols[:2])
+                    x = ' '.join(symbols[:2])
                     new_productions[new_non_terminal] = [x]
                     array = symbols[2:]
-                    symbols = new_non_terminal + array[0]
-                    #symbols = [new_non_terminal] + symbols[2:]
+                    symbols = new_non_terminal + ' ' + array[0]
+                    symbols = symbols.split()
+                symbols = ' '.join(symbols)
                 updated_productions.append(symbols)
 
             else:
-                updated_productions.append(production)
+                updated_productions.append(production.rstrip())
 
         new_productions[non_terminal] = updated_productions
 
@@ -230,7 +232,7 @@ def parseToCNF(T, P, V, S):
     P = break_down_long_productions(P, T)
 
     # # Paso 5: Eliminar las producciones con mas de 2 simbolos
-    #P = eliminate_more_two_productions(P)
+    P = eliminate_more_two_productions(P)
 
     # Ahora, P contiene las producciones en CNF
     CNF = (T, P, V, S)

@@ -14,7 +14,7 @@ P = {
     'Det': {'a', 'the'},
     'V': {'cooks', 'drinks', 'eats', 'cuts'},
     'P': {'in', 'with'},
-    'NP': {'he she', 'Det N'},
+    'NP': {'he','she', 'Det N'},
     'PP': {'P NP'},
     'VP': {'VP PP', 'V NP','cooks', 'drinks', 'eats', 'cuts' },
     'B': {''},

@@ -159,6 +159,7 @@ def break_down_long_productions(P, T):
                         new_direct_productions[new_symbol] = {production[0]}
                 else:
                     for x in production:
+                        new_last_symbol = list(new_direct_productions) [-1]
                         if x in T:
                             exists_prod = check_terminal_prods(new_direct_productions, {x})
                             if exists_prod:

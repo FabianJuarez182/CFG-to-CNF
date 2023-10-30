@@ -98,6 +98,14 @@ def eliminate_unit_productions(P, V):
     # Reconstruimos el conjunto de producciones finales
     for nonterminal, productions in P.items():
         P[nonterminal] = list(direct_productions[nonterminal])
+    keys_to_remove = []
+    for nonterminal, productions in P.items():
+        if not direct_productions[nonterminal]:
+            keys_to_remove.append(nonterminal)
+
+    for nonterminal in keys_to_remove:
+        del P[nonterminal]
+        V.remove(nonterminal)
 
     return P, V
 
